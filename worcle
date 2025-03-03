@@ -21,7 +21,7 @@
 190 print ""
 200 print "                 P";chr$(158);"I";chr$(154);"LLS"
 
-210 print "The letter ";chr$(5);"I";chr$(154);' is in the word but in the"
+210 print "The letter ";chr$(5);"I";chr$(154);" is in the word but in the"
 220 print "wrong spot."
 230 print ""
 240 print "                 VAG";chr$(155);"U";chr$(154);"E" : rem 17 spaces
