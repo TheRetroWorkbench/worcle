@@ -1,0 +1,129 @@
+10 print chr$(147); : rem clear screen
+20 poke 53272,23 : rem switch to lower case
+
+30 print "        WORCLE by Michael Heath" : rem 8 spaces
+40 print "     Based on WORDLE by Josh Wardle" : rem 5 spaces
+50 print chr$(5);"----------------------------------------";chr$(154); : rem 40 dashes
+60 print "Guess the ";chr$(5);"WORCLE";chr$(154);" in six tries."
+70 print ""
+80 print "Each guess must be a five-letter word."
+90 print "Hit the RETURN button to submit."
+100 print ""
+
+110 print "After each guess, the color of the"
+120 print "letters will change to show how close"
+130 print "your guess was to the word."
+140 print chr$(5);"----------------------------------------";chr$(154); : rem 40 dashes
+150 print "                ";chr$(5);"Examples";chr$(154) : rem 16 spaces
+160 print ""
+170 print "                 ";chr$(30);"W";chr$(154);"EARY" : rem 17 spaces
+180 print "The letter ";chr$(5);"W";chr$(154);" is in the correct spot."
+190 print ""
+200 print "                 P";chr$(158);"I";chr$(154);"LLS"
+
+210 print "The letter ";chr$(5);"I";chr$(154);' is in the word but in the"
+220 print "wrong spot."
+230 print ""
+240 print "                 VAG";chr$(155);"U";chr$(154);"E" : rem 17 spaces
+250 print "The letter ";chr$(5);"U";chr$(154);" is not in the word."
+260 print chr$(5);"----------------------------------------";chr$(154); : rem 40 dashes
+270 print "         Press RETURN to begin." : rem 9 spaces
+
+280 get a$ : rem wait for RETURN
+290 if a$ <> chr$(13) then goto 280 : rem if not RETURN check again
+300 print "←←←←←←←←←←←←←←←←←←←←←←      ";chr$(5);"Loading...      ";chr$(154); : rem 22 arrows, 6 spaces, 6 spaces
+
+310 r = int(rnd(1) * 2315) + 1 : rem choose word
+320 open 1,8,2,"words,s,r" : rem read file
+330 for i = 1 to r
+340 w$ = ""
+350 for j = 1 to 5
+360 get#1,a$: w$ = w$ + a$
+370 next j
+380 next i
+
+390 print chr$(147); 
+400 poke 53272,21 : rem switch to upper case
+
+410 dim gs$(6) : rem guesses
+420 guessed = 0
+430 dim greens(5), yellows(5), wcount(26), acount(26)
+
+440 for i = 1 to 7 : rem main game loop
+450 print chr$(147)
+460 print "                 worcle" : rem 17 spaces
+470 print ""
+480 print "   enter your guess and press return." : rem 3 spaces
+490 print ""
+
+500 for j = 1 to 6 : rem print guesses
+510 if not gs$(j) = "" then gosub 1000
+520 next j
+530 if guessed = 1 then end
+540 if i = 7 then gosub 1400
+550 input "               ";g$ : rem 15 spaces
+560 if len(g$) <> 5 then goto 550
+
+570 for j = 1 to 26 : rem reset arrays
+580 if j < 6 then greens(j) = 0
+590 if j < 6 then yellows(j) = 0
+600 acount(j) = 0
+610 wcount(j) = 0
+620 next j
+
+630 for j = 1 to 5 : rem count instances
+640 c$ = mid$(w$,j,1)
+650 x = asc(c$) - 65
+660 wcount(x) = wcount(x) + 1
+670 next j
+
+680 for j = 1 to 5 : rem find greens
+690 c$ = mid$(g$,j,1)
+700 x = asc(c$) - 65
+710 if c$ = mid$(w$,j,1) then gosub 1100
+720 next j
+
+730 guessed = 1
+740 for j = 1 to 5 : rem check solved
+750 if greens(j) = 0 then guessed = 0
+760 next j
+
+770 if guessed = 1 then goto 850
+780 for j = 1 to 5 : rem find yellows
+790 c$ = mid$(g$,j,1)
+800 x = asc(c$) - 65
+810 for k = 1 to 5
+820 if c$ = mid$(w$,k,1) then gosub 1200
+830 next k
+840 next j
+
+850 cl$ = ""
+860 for j = 1 to 5 : rem add colors to guess
+870 cl$ = cl$ + chr$(152)
+880 if greens(j) = 1 then cl$ = cl$ + chr$(30)
+890 if yellows(j) = 1 then cl$ = cl$ + chr$(158)
+900 cls = cl$ + mid$(g$,j,1)
+910 next j
+920 cl$ = cl$ + chr$(154)
+930 gs$(i) = cl$
+940 next i
+950 end
+
+1000 print "                 ";gs$(j) : rem 17 spaces
+1010 return
+
+1100 greens(j) = 1
+1110 acount(x) = acount(x) + 1
+1120 return
+
+1200 if acount(x) < wcount(x) then gosub 1300
+1210 return
+
+1300 yellows(j) = 1
+1310 acount(x) = acount(x) + 1
+1320 return
+
+1400 print ""
+1410 print "                 ";w$ : rem 17 spaces
+1420 print ""
+1430 end
