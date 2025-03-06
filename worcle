@@ -116,7 +116,7 @@
 1110 acount(x) = acount(x) + 1
 1120 return
 
-1200 if acount(x) < wcount(x) then gosub 1300
+1200 if acount(x) < wcount(x) and greens(j) then gosub 1300
 1210 return
 
 1300 yellows(j) = 1
